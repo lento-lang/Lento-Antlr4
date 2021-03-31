@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>LentoInterpreter</AssemblyName>
+    <RootNamespace>LentoInterpreter</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArgumentsUtil" Version="1.0.3" />
+    <PackageReference Include="EzConsole" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LentoCore\LentoCore.csproj" />
+  </ItemGroup>
+
+</Project>

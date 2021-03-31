@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LentoInterpreter", "Lento\LentoInterpreter.csproj", "{0FC139D0-2E7A-4F8F-B642-3A939F43B603}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LentoCore", "LentoCore\LentoCore.csproj", "{C19B833B-F5DE-432F-90FF-19B8569E99AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0FC139D0-2E7A-4F8F-B642-3A939F43B603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FC139D0-2E7A-4F8F-B642-3A939F43B603}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FC139D0-2E7A-4F8F-B642-3A939F43B603}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FC139D0-2E7A-4F8F-B642-3A939F43B603}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C19B833B-F5DE-432F-90FF-19B8569E99AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C19B833B-F5DE-432F-90FF-19B8569E99AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C19B833B-F5DE-432F-90FF-19B8569E99AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C19B833B-F5DE-432F-90FF-19B8569E99AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBD67669-0F78-4AFC-A358-636352281784}
+	EndGlobalSection
+EndGlobal
