@@ -13,11 +13,12 @@ namespace LentoInterpreter
                 Console.Write("LI> "); 
                 var expr = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(expr)) continue;
-                APCSharp.Parser.PResult result = Parser.ParseRaw(expr);
+                APCSharp.Parser.PResult result = Parser.MatchParser.Run(expr);
                 if (result.Success)
                 {
-                    Console.WriteLine(result.ResultNode.ToString());
-                    Console.WriteLine($"Remaining ({result.Remaining.Length}): '{result.Remaining}'", ConsoleColor.DarkGray);
+                    Console.WriteLine(result.AST.ToString());
+
+                    Console.WriteLine($"Remaining ({result.Remaining.Length / 2}): '{result.Remaining}'", ConsoleColor.DarkGray);
                 }
                 else Console.WriteLine(result.ErrorMessage, ConsoleColor.Red);
             }
