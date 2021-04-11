@@ -8,16 +8,20 @@ namespace LentoCore.Parser
     {
         #region Combiner Declarations
 
-        public static readonly Combiner FlattenCombiner = new Combiner(CombinerType.Lists, (n1, n2) =>
+        public static readonly Combiner FlattenCombiner = new Combiner((n1, n2) =>
         {
-            if (n1.Type !=  NodeType.List) throw new ArgumentException("Flatten only works on a list");
             Node result = Node.List();
-            foreach (var node in n1.Children) result.Children.Add(node);
+            if (n1.Type == NodeType.List)
+            {
+                foreach (var node in n1.Children) result.Children.Add(node);
+            }
+            else if (n1.Type != NodeType.Empty) result.Children.Add(n1);
             if (n2.Type == NodeType.List)
             {
                 foreach (var node in n2.Children) result.Children.Add(node);
             }
-            else result.Children.Add(n2);
+            else if (n2.Type != NodeType.Empty) result.Children.Add(n2);
+
             return result;
         });
 
@@ -34,16 +38,19 @@ namespace LentoCore.Parser
         public static readonly ParserBuilder ExpressionParser = APCSharp.Parser.Parser.Integer;
 
         public static readonly ParserBuilder IdentifierParser = APCSharp.Parser.Parser.Word.FollowedBy(APCSharp.Parser.Parser.AnyOf(APCSharp.Parser.Parser.Word, APCSharp.Parser.Parser.Integer, APCSharp.Parser.Parser.Char('_')).ZeroOrMore().ListToString()).ListToString().InfoBinder("variable identifier");
-        public static readonly ParserBuilder IgnoreIdentifierParser = APCSharp.Parser.Parser.Char('_').OneOrMore().FollowedBy(APCSharp.Parser.Parser.Integer.ZeroOrMore()).FollowedBy(IdentifierParser).InfoBinder("'ignore' identifier"); // don't care
+        public static readonly ParserBuilder IgnoreIdentifierParser = APCSharp.Parser.Parser.Char('_').OneOrMore().ListToString().FollowedBy(APCSharp.Parser.Parser.AnyOf(IdentifierParser, APCSharp.Parser.Parser.Integer).ZeroOrMore()).ListToString().InfoBinder("'ignore' identifier"); // don't care
         public static readonly ParserBuilder MatchIdentifierParser = IdentifierParser.Or(IgnoreIdentifierParser);
 
-        public static readonly ParserBuilder MatchParser = MatchIdentifierParser
-            .IgnoredArbitraryWhitespaces().FollowedBy(EqualSignParser)
-            .IgnoredArbitraryWhitespaces().FollowedBy(ExpressionParser).Map(FlattenCombiner, NodeType.List).InfoBinder("match expression");
+        public static readonly ParserBuilder MatchParser = MatchIdentifierParser.IgnoreAnyWhitespaces().FollowedBy(EqualSignParser)
+            .IgnoreAnyWhitespaces().FollowedBy(ExpressionParser).Map(FlattenCombiner, NodeType.List).InfoBinder("match expression");
+
+        public static readonly ParserBuilder LentoParser = APCSharp.Parser.Parser.AnyOf(
+            MatchParser
+        );
         
         #endregion
         
-        public static PResult ParseRaw(string code) => APCSharp.Parser.Parser.AnyOf(MatchParser).Run(code);
+        public static PResult ParseRaw(string code) => LentoParser.Run(code);
         public static ParserResult Parse(string code) => Traverse(ParseRaw(code));
 
         private static ParserResult Traverse(PResult parseResult)
