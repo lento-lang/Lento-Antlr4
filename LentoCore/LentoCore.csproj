@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="APCSharp" Version="1.0.3" />
     <PackageReference Include="EzConsole" Version="1.0.0" />
+    <PackageReference Include="Superpower" Version="2.3.0" />
   </ItemGroup>
 
 </Project>

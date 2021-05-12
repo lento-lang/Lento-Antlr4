@@ -1,66 +1,54 @@
-﻿using System;
-using APCSharp.Parser;
-using LentoCore.Data;
+﻿using LentoCore.Model;
+using Superpower;
+using Superpower.Model;
+using Superpower.Parsers;
 
 namespace LentoCore.Parser
 {
+
     public static class Parser
     {
-        #region Combiner Declarations
-
-        public static readonly Combiner FlattenCombiner = new Combiner((n1, n2) =>
-        {
-            Node result = Node.List();
-            if (n1.Type == NodeType.List)
-            {
-                foreach (var node in n1.Children) result.Children.Add(node);
-            }
-            else if (n1.Type != NodeType.Empty) result.Children.Add(n1);
-            if (n2.Type == NodeType.List)
-            {
-                foreach (var node in n2.Children) result.Children.Add(node);
-            }
-            else if (n2.Type != NodeType.Empty) result.Children.Add(n2);
-
-            return result;
-        });
-
-        #endregion
-
+        /*
         #region Parser Declarations
 
         #region Operators
 
-        public static readonly ParserBuilder EqualSignParser = APCSharp.Parser.Parser.Char('=').InfoBinder("equal sign '='");
+        public static readonly TokenListParser<LentoToken, Expression>
+            InfixOperator = Parse.Chain(Token.EqualTo(LentoToken.Operator).Value('+'), Parse.Ref(() => ExpressionParser), (c, expression, ) => );
 
         #endregion
+
+        #region Identifier
         
-        public static readonly ParserBuilder ExpressionParser = APCSharp.Parser.Parser.Integer;
+        public static readonly TokenListParser<LentoToken, Expression> IdentifierParser = APCSharp.Parser.Parser.Word.FollowedBy(APCSharp.Parser.Parser.AnyOf(APCSharp.Parser.Parser.Word, APCSharp.Parser.Parser.Integer, APCSharp.Parser.Parser.Char('_')).ZeroOrMore().ListToString()).ListToString().InfoBinder("variable identifier");
+        public static readonly TokenListParser<LentoToken, Expression> IgnoreIdentifierParser = APCSharp.Parser.Parser.Char('_').OneOrMore().ListToString().FollowedBy(APCSharp.Parser.Parser.AnyOf(IdentifierParser, APCSharp.Parser.Parser.Integer).ZeroOrMore()).ListToString().InfoBinder("'ignore' identifier"); // don't care
 
-        public static readonly ParserBuilder IdentifierParser = APCSharp.Parser.Parser.Word.FollowedBy(APCSharp.Parser.Parser.AnyOf(APCSharp.Parser.Parser.Word, APCSharp.Parser.Parser.Integer, APCSharp.Parser.Parser.Char('_')).ZeroOrMore().ListToString()).ListToString().InfoBinder("variable identifier");
-        public static readonly ParserBuilder IgnoreIdentifierParser = APCSharp.Parser.Parser.Char('_').OneOrMore().ListToString().FollowedBy(APCSharp.Parser.Parser.AnyOf(IdentifierParser, APCSharp.Parser.Parser.Integer).ZeroOrMore()).ListToString().InfoBinder("'ignore' identifier"); // don't care
-        public static readonly ParserBuilder MatchIdentifierParser = IdentifierParser.Or(IgnoreIdentifierParser);
-
-        public static readonly ParserBuilder MatchParser = MatchIdentifierParser.IgnoreAnyWhitespaces().FollowedBy(EqualSignParser)
-            .IgnoreAnyWhitespaces().FollowedBy(ExpressionParser).Map(FlattenCombiner, NodeType.List).InfoBinder("match expression");
-
-        public static readonly ParserBuilder LentoParser = APCSharp.Parser.Parser.AnyOf(
-            MatchParser
-        );
-        
         #endregion
+
+        #region Expression
+
+        public static readonly TokenListParser<LentoToken, Expression> ParenthesesExpressionParser = APCSharp.Parser.Parser.Char('(')
+            .IgnoredWhitespaces().FollowedBy(APCSharp.Parser.Parser.Ref(() => ExpressionParser).IgnoredWhitespaces())
+            .FollowedBy(APCSharp.Parser.Parser.Char(')')).Flatten().InfoBinder("parentheses expression");
         
-        public static PResult ParseRaw(string code) => LentoParser.Run(code);
-        public static ParserResult Parse(string code) => Traverse(ParseRaw(code));
+        public static readonly TokenListParser<LentoToken, Expression> ExpressionParser = APCSharp.Parser.Parser.AnyOf(
+            ParenthesesExpressionParser,
+            InfixOperator,
+            APCSharp.Parser.Parser.Integer
+        ).InfoBinder("expression");
 
-        private static ParserResult Traverse(PResult parseResult)
-        {
-            if (!parseResult.Success) return ParserResult.Failure(parseResult.ErrorMessage);
-            AST root = new AST();
-            // Transform the parse result to an Lento AST
+        #endregion
 
+        #region Match
 
-            return ParserResult.Successful(root);
-        }
+        public static readonly TokenListParser<LentoToken, Expression> MatchIdentifierParser = IdentifierParser.Or(IgnoreIdentifierParser);
+        public static readonly TokenListParser<LentoToken, Expression> MatchParser = MatchIdentifierParser.IgnoredWhitespaces().FollowedBy(EqualSignParser.IgnoredWhitespaces()).FollowedBy(ExpressionParser).InfoBinder("match expression");
+
+        #endregion
+
+        public static readonly TokenListParser<LentoToken, Expression> LentoParser = MatchParser;
+
+        #endregion
+        */
     }
 }
