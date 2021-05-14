@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
     <PackageReference Include="EzConsole" Version="1.0.0" />
-    <PackageReference Include="Superpower" Version="2.3.0" />
   </ItemGroup>
 
 </Project>

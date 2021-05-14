@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using LentoCore.Model;
-using LentoCore.Parser;
-using LentoCore.Tokenizer;
-using Superpower.Model;
+﻿using Antlr4.Runtime.Tree;
 
 namespace LentoCore.Evaluator
 {
     public class EvaluatorResult
     {
-        public ExpressionValue Value;
+        public dynamic Value; // TODO: Add actual value type
         public bool Succeeded;
         public string ErrorMessage;
-        public TokenList<LentoToken> Remaining;
-        public Expression ParsedExpression;
+        public string Remaining;
+        public IParseTree ParsedExpression;
     }
 }

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LentoCore.Model;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using LentoCore.Parser;
-using LentoCore.Tokenizer;
-using Superpower;
-using Superpower.Model;
 
 namespace LentoCore.Evaluator
 {
@@ -14,28 +10,35 @@ namespace LentoCore.Evaluator
     {
         public static EvaluatorResult Run(string input)
         {
-            TokenList<LentoToken> tokens = TokenList<LentoToken>.Empty;
+            ICharStream characters = CharStreams.fromString(input);
+            ITokenSource lexer = new LentoLexer(characters);
+            ITokenStream tokens = new CommonTokenStream(lexer);
+            LentoParser parser = new LentoParser(tokens)
+            {
+                BuildParseTree = true
+            };
+
             try
             {
-                tokens = Tokenizer.Tokenizer.Instance.Tokenize(input);
-                //Expression ast = Parser.Parser.LentoParser.Parse(tokens);
-                //ExpressionValue value = ast.Evaluate();
+                IParseTree tree = parser.root();
+                var value = 0;
 
                 return new EvaluatorResult
                 {
                     Succeeded = true,
-                    Value = new ExpressionValue(), //value,
-                    Remaining = tokens,
-                    ParsedExpression = null, // ast
+                    Value = value,
+                    Remaining = characters.GetText(Interval.Of(characters.Index, characters.Size)),
+                    ParsedExpression = tree
                 };
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 return new EvaluatorResult
                 {
                     Succeeded = false,
                     ErrorMessage = e.Message,
-                    Remaining = tokens
+                    Remaining = characters.GetText(Interval.Of(characters.Index, characters.Size))
                 };
             }
         }
