@@ -1,0 +1,2 @@
+int add(int a, int b) = a + b
+add(10, 20)
