@@ -19,7 +19,7 @@ namespace LentoInterpreter
                     {
                         Console.WriteLine($"{result.Value}");
                         // Console.WriteLine($"Remaining ({result.Remaining.Length}): {result.Remaining}", ConsoleColor.DarkGray);
-                        Console.WriteLine(result.ParsedExpression.ToStringTree(), ConsoleColor.DarkGreen);
+                        Console.WriteLine(Evaluator.PrettyPrint(result.ParsedExpression), ConsoleColor.DarkGreen);
                     }
                     else Console.WriteLine(result.ErrorMessage, ConsoleColor.Red);
                 }

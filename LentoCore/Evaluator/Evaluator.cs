@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -12,21 +13,21 @@ namespace LentoCore.Evaluator
     {
         private static bool _syntaxError;
         private static string _errors;
-
+        private static LentoParser _parser;
         public static EvaluatorResult Run(string input)
         {
-            ICharStream characters = CharStreams.fromString(input);
+            ICharStream characters = CharStreams.fromString(input + '\n');  // Add newline to end the last expression.
             ITokenSource lexer = new LentoLexer(characters);
             ITokenStream tokens = new CommonTokenStream(lexer);
-            LentoParser parser = new LentoParser(tokens)
+            _parser = new LentoParser(tokens)
             {
                 BuildParseTree = true
             };
 
-            parser.RemoveErrorListener(ConsoleErrorListener<IToken>.Instance);
-            parser.AddErrorListener(new ErrorListener());
+            _parser.RemoveErrorListener(ConsoleErrorListener<IToken>.Instance);
+            _parser.AddErrorListener(new ErrorListener());
             _syntaxError = false;
-            IParseTree tree = parser.compilation_unit();
+            IParseTree tree = _parser.compilation_unit();
             if (_syntaxError) return new EvaluatorResult
             {
                 Succeeded = false,
@@ -44,6 +45,9 @@ namespace LentoCore.Evaluator
                 ParsedExpression = tree
             };
         }
+
+        #region Error Handling
+
         private class ErrorListener : IAntlrErrorListener<IToken>
         {
             public void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
@@ -58,5 +62,30 @@ namespace LentoCore.Evaluator
                 return char.ToUpper(msg[0]) + msg.Substring(1);
             }
         }
+
+        #endregion
+
+        #region Pretty Print
+        
+        public static string PrettyPrint(IParseTree tree)
+        {
+            string result = string.Empty;
+            PrettyRecursive(tree, ref result, 0, _parser.RuleNames);
+            return result.TrimEnd();
+        }
+
+        private static void PrettyRecursive(IParseTree tree, ref string buf, int indent, string[] ruleNames)
+        {
+            for (int i = 0; i < indent; i++) buf += "  ";
+            buf += PrettySanitize(Trees.GetNodeText(tree, ruleNames)) + '\n';
+            for (int i = 0; i < tree.ChildCount; i++) PrettyRecursive(tree.GetChild(i), ref buf, indent + 1, ruleNames);
+        }
+
+        private static string PrettySanitize(string text) => text
+            .Replace("\n", "\\n")
+            .Replace("\t", "\\t")
+            .Replace(" ", "' '");
+
+        #endregion
     }
 }
