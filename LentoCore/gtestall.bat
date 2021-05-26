@@ -9,7 +9,8 @@ javac LentoLexer.java
 javac LentoParser.java
 echo.
 
-java org.antlr.v4.gui.TestRig Lento compilation_unit ..\Test\input1.txt -gui
+echo Testing input files . . .
+java org.antlr.v4.gui.TestRig Lento compilation_unit ..\Test\input*.txt -gui
 
 echo.
 pause
