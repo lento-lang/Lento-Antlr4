@@ -1,4 +1,8 @@
 int x = 12
-print(x)
+print(x - 10, 2)
 int add(int a, int b) = a + b
 add(10, x)
+
+blablabla funk(bool a, Car c) {
+  c.canDrive && a
+}
