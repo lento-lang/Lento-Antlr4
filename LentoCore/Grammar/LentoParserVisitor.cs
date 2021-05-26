@@ -33,11 +33,29 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface ILentoParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LentoParser.comment"/>.
+	/// Visit a parse tree produced by <see cref="LentoParser.whitespace_any"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitComment([NotNull] LentoParser.CommentContext context);
+	Result VisitWhitespace_any([NotNull] LentoParser.Whitespace_anyContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LentoParser.whitespace_sp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhitespace_sp([NotNull] LentoParser.Whitespace_spContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LentoParser.whitespace_nl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhitespace_nl([NotNull] LentoParser.Whitespace_nlContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LentoParser.atom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAtom([NotNull] LentoParser.AtomContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LentoParser.identifier"/>.
 	/// </summary>
@@ -86,12 +104,6 @@ public interface ILentoParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCharacter([NotNull] LentoParser.CharacterContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LentoParser.text"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitText([NotNull] LentoParser.TextContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LentoParser.typed_identifier"/>.
 	/// </summary>
@@ -159,17 +171,23 @@ public interface ILentoParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunction_declaration([NotNull] LentoParser.Function_declarationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LentoParser.whitespace_pre"/>.
+	/// Visit a parse tree produced by <see cref="LentoParser.variable_assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitWhitespace_pre([NotNull] LentoParser.Whitespace_preContext context);
+	Result VisitVariable_assignment([NotNull] LentoParser.Variable_assignmentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LentoParser.whitespace_post"/>.
+	/// Visit a parse tree produced by <see cref="LentoParser.operator_infix"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitWhitespace_post([NotNull] LentoParser.Whitespace_postContext context);
+	Result VisitOperator_infix([NotNull] LentoParser.Operator_infixContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LentoParser.operator_prefix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOperator_prefix([NotNull] LentoParser.Operator_prefixContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LentoParser.expression_separator"/>.
 	/// </summary>

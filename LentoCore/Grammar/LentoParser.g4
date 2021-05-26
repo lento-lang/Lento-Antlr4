@@ -6,6 +6,8 @@ whitespace_any: (NL | SP | COMMENT_MULTI)+;
 whitespace_sp: (SP | COMMENT_MULTI)+;
 whitespace_nl: (NL | COMMENT_MULTI)+;
 
+atom: ATOM;
+type: TYPE;
 identifier
 	: IDENTIFIER
 	| IGNORE_IDENTIFIER
@@ -26,27 +28,30 @@ numerical
 string: SPRING;
 character: CHARACTER;
 
-typed_identifier: TYPE whitespace_sp identifier;													/* int a */
+typed_identifier: type whitespace_sp identifier;													/* int a */
 
-tuple: LPAREN (expression (SEPARATOR_COMMA expression)*)? RPAREN;
-tuple_type: LPAREN (typed_identifier (SEPARATOR_COMMA typed_identifier)*)? RPAREN;		/* Type for tuple */
+tuple: LPAREN whitespace_sp? (expression (whitespace_sp? SEPARATOR_COMMA whitespace_sp? expression)*)? whitespace_sp? RPAREN;
+tuple_type: LPAREN whitespace_sp? (typed_identifier whitespace_sp? (SEPARATOR_COMMA whitespace_sp? typed_identifier whitespace_sp?)*)? whitespace_sp? RPAREN;		/* Type for tuple */
 
 list: LBRACKET (expression (SEPARATOR_COMMA expression)*)? RBRACKET;
-list_type: LBRACKET (TYPE (SEPARATOR_COMMA TYPE)*)? RBRACKET;
+list_type: LBRACKET whitespace_sp? (type whitespace_sp? (SEPARATOR_COMMA whitespace_sp? type whitespace_sp?)*)? whitespace_sp? RBRACKET;
 
 map_element: identifier COLON expression;
-map: LPAREN map_element (SEPARATOR_COMMA map_element)* RPAREN;								/* A map must have at least one element to ensure it's a map and not a tuple. Empty map can be created using Map.new() */
-map_type: LPAREN typed_identifier (SEPARATOR_COMMA typed_identifier)* RPAREN;
+map: LPAREN whitespace_sp? map_element (SEPARATOR_COMMA map_element)* whitespace_sp? RPAREN;								/* A map must have at least one element to ensure it's a map and not a tuple. Empty map can be created using Map.new() */
+map_type: LPAREN whitespace_sp? typed_identifier (SEPARATOR_COMMA typed_identifier)* whitespace_sp? RPAREN;
 
-block: LBRACE (expression | (expression expression_separator)*) RBRACE;
+statements: expression (expression_separator expression)* expression_separator?;
+block: LBRACE statements RBRACE;
 
 function_call
 	: FUNCTION_NAME tuple																	/* func(10, 2)	or	if(12 == 32, "Test") */
-	| FUNCTION_NAME (whitespace_sp expression)+ expression_separator									/* func 10 2	or	if 12 == 32 "Test"	 */
+	| FUNCTION_NAME map																		/* Named arugments */
+	| FUNCTION_NAME (whitespace_sp expression)+												/* func 10 2	or	if 12 == 32 "Test"	 */
 	;
 function_declaration
-	: TYPE whitespace_sp FUNCTION_NAME tuple_type whitespace_sp? (ASSIGN expression | block)
+	: type whitespace_sp FUNCTION_NAME tuple_type whitespace_sp? (ASSIGN whitespace_sp? expression | block)
 	;
+variable_assignment: type whitespace_sp identifier whitespace_sp? ASSIGN whitespace_sp? (expression | block);
 
 operator_infix: OPERATOR_INFIX;
 operator_prefix: OPERATOR_PREFIX;
@@ -58,15 +63,17 @@ expression
 	| expression operator_infix expression 			/* Chained infix operators (order does not matter, precedence is accounted for in evaluator) */
 	| operator_prefix expression						/* Prefix operators */
 	| function_declaration
+	| variable_assignment
 	| function_call
-	| identifier
+	/* | identifier */
 	| numerical
 	| character
 	| string
 	| tuple															/* A single element tuple is a parenthesised expression */
 	| list
 	| map
+	| atom
 	| block
 	;
 
-compilation_unit: expression (expression_separator expression)* expression_separator? EOF;
+compilation_unit: statements EOF;

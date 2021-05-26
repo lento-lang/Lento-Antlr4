@@ -1,2 +1,4 @@
+int x = 12
+print(x)
 int add(int a, int b) = a + b
-add(10, 20)
+add(10, x)
