@@ -1,13 +1,5 @@
-<div align=center>
-    <br><br>
-    <img src="assets/logo.png" height=250px/>
-    <h1>The Lento Programming Language</h1>
-    <em>
-    	A functional programming language<br>
-        that aims to purify the object-oriented paradigm.
-    </em>
-</div>
-
+> # Discontinued
+> This version of the Lento toolchain is no longer under development.
 
 
 ## Welcome!
