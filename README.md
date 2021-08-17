@@ -1,5 +1,7 @@
 > # Discontinued
 > This version of the Lento toolchain is no longer under development.
+> 
+> See [Lento](https://github.com/Lento-lang/Lento) for the latest up to date project.
 
 
 ## Welcome!
